@@ -115,7 +115,7 @@ class Pessoa {
      */
     cadastroPessoa(pessoa) {
         //persistindo os dados
-        console.log(`${pessoa.nome} cadastrado com sucesso`);
+        console.log(`${pessoa.nome} cadastrado(a) com sucesso`);
     }
 }
 exports.Pessoa = Pessoa;
