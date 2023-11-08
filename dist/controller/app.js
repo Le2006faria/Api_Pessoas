@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const Pessoa_1 = require("../model/Pessoa");
 const bancoDeDados_1 = require("./bancoDeDados");
 // Inicializa uma liosta de pessoas
 (0, bancoDeDados_1.inicializarPessoas)();
@@ -13,10 +15,24 @@ const app = (0, express_1.default)();
 const port = 3001;
 // Habilitando o uso do JSON no servidor express
 app.use(express_1.default.json());
+app.use((0, cors_1.default)());
 // Primeira rota, a rota principal do servidor
 app.get(`/`, (req, res) => {
     console.log(`Recebi sua requisição`);
     res.send({ mensagem: "Estou devolvendo a resposta para a sua requisição" });
+});
+// Rota para cadastrar uma pessoa
+app.post('/cadastro', (req, res) => {
+    // Recuperando as informações JSON que vieram no corpo (body) da requisição (req) e desestruturando essa informação para cada atributo
+    const { nome, cpf, data_nascimento, telefone, endereco, altura, peso } = req.body;
+    // Criando um novo objeto do tipo Pessoa com as informações recuperadas da requisição
+    const pessoa = new Pessoa_1.Pessoa(nome, cpf, new Date(data_nascimento), telefone, endereco, altura, peso);
+    // Apenas imprimindo as informações do objeto no console do servidor
+    console.log(pessoa);
+    // Chamando a função para persistir (salvar) os dados da pessoa no banco de dados
+    (0, bancoDeDados_1.persistirPessoa)(pessoa);
+    // Resposta que o servidor irá enviar ao front-end (A resposta será estrutura em um JSON)
+    res.json({ mensagem: "Pessoa cadastrada com sucesso" });
 });
 // Rota para consultar pessoas
 app.get(`/pessoas`, (req, res) => {
